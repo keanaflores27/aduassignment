@@ -1,0 +1,219 @@
+---
+title: "Assignment One: Research Questions"
+author: "Keana Flores, Lindsey Mayer, Andrew Mikula"
+date: "10/25/2021"
+output: html_document
+---
+
+*Research Question*
+
+Did the adoption of an accessory dwelling unit (ADU) ordinance lower the cost of rent in Monroe County, Indiana? 
+
+
+*Prior Research*
+
+Crane (2020) found that ADUs “have increased the supply of relatively low-cost rental units in low-density neighborhoods” in California, but it is either illegal or undesirable for many homeowners to do so, thus limiting the potential for a significant price effect. Ramsey-Musolf (2018) is also skeptical of the ability of California’s ADUs to provide large-scale low-income housing, finding that, among the 759 ADUs constructed in California in the available dataset,  “no units were identified as available low-income housing.”  
+
+*Data + Definition of Sample Population*
+
+The sample population for this study is Monroe County, Indiana between 2009 and 2019. The analysis will include the following variables:
+- Number of White individuals (ACS)
+- Number of Black individuals (ACS)
+- Number of Native American individuals (ACS)
+- Number of Asian individuals (ACS)
+- Number of Native Hawaiian or Pacific Islander individuals (ACS)
+- Total population (ACS)
+- Number of housing units (ACS)
+- Median income (ACS)
+- Median rental price among 1-bedroom apartments (ACS)
+
+*References*
+
+Rebecca Elisabeth Crane. 2020. “Is Granny in that Flat?: How Regulations Shape the Construction and Use of Accessory Dwelling Units in Los Angeles.” The California Digital Library. https://escholarship.org/uc/item/2wh204vz
+ 
+Mike Hanks. April 4, 2019. “Bloomington opens door to more affordable housing units.” Adams Publishing Group. https://www.hometownsource.com/sun_current/community/bloomington/bloomington-opens-door-to-more-affordable-housing-units/article_f17b8092-5652-11e9-8951-47a5d871ac49.html 
+ 
+Darrel Ramsey-Musolf. Accessory Dwelling Units as Low-Income Housing: California’s Faustian Bargain. Urban Sci. 2(3), 89. DOI: https://doi.org/10.3390/urbansci2030089
+ 
+United States Census Bureau. American Community Survey, 5-year estimates. 2009-2019.
+
+*Data*
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+library(readxl)
+library(knitr)
+library(magrittr)
+library(dplyr)
+```
+
+```{r}
+v09 <- load_variables(2009, "acs1", cache = TRUE)
+
+View(v09)
+
+```
+
+```{r}
+demos09 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2009,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+
+```
+
+```{r}
+v10 <- load_variables(2010, "acs1", cache = TRUE)
+
+View(v10)
+
+```
+
+```{r}
+demos10 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2010,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+
+```
+
+
+```{r}
+v11 <- load_variables(2011, "acs1", cache = TRUE)
+
+View(v11)
+
+```
+
+```{r}
+demos11 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2011,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+```
+
+```{r}
+v12 <- load_variables(2012, "acs1", cache = TRUE)
+
+View(v12)
+
+```
+
+```{r}
+demos12 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2012,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+
+```
+
+```{r}
+v13 <- load_variables(2013, "acs1", cache = TRUE)
+
+View(v13)
+
+```
+
+```{r}
+demos13 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2013,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+```
+
+```{r}
+v14 <- load_variables(2014, "acs1", cache = TRUE)
+
+View(v14)
+
+```
+
+```{r}
+demos14 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2014,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+
+```
+
+```{r}
+v15 <- load_variables(2015, "acs1", cache = TRUE)
+
+View(v15)
+
+```
+
+```{r}
+demos15 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2015,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+```
+
+```{r}
+v16 <- load_variables(2016, "acs1", cache = TRUE)
+
+View(v16)
+
+```
+
+```{r}
+demos16 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2016,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+```
+
+```{r}
+v17 <- load_variables(2017, "acs1", cache = TRUE)
+
+View(v17)
+
+```
+
+```{r}
+demos17 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2017,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+
+```
+
+```{r}
+v18 <- load_variables(2018, "acs1", cache = TRUE)
+
+View(v18)
+
+```
+
+```{r}
+demos18 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2018,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+
+```
+
+```{r}
+v19 <- load_variables(2019, "acs1", cache = TRUE)
+
+View(v19)
+```
+
+```{r}
+demos19 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2019,
+                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
+                   output = "wide")
+
+```
+
+```{r}
+rentalprices <- read_csv("Bloomington1.csv")
+```
+```{r}
+data <- left_join (demos09, demos10) %>%
+  left_join(demos11) %>%
+  left_join(demos12) %>%
+  left_join(demos13) %>%
+  left_join(demos14) %>%
+  left_join(demos15) %>%
+  left_join(demos16) %>%
+  left_join(demos17) %>%
+  left_join(demos18) %>%
+  left_join(demos19) %>%
+  left_join(rentalprices)
+  
+kable(head(data))
+```
+
