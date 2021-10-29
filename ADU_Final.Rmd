@@ -1,0 +1,88 @@
+---
+title: "RMarkdownBloomington"
+author: "Keana Flores"
+date: "10/29/2021"
+output: html_document
+---
+title: "Assignment One: Research Questions"
+author: "Keana Flores, Lindsey Mayer, Andrew Mikula"
+date: "10/25/2021"
+output: html_document
+---
+
+*Research Question*
+
+Did the adoption of an accessory dwelling unit (ADU) ordinance lower the cost of rent in Monroe County, Indiana? 
+
+
+*Prior Research*
+
+Crane (2020) found that ADUs “have increased the supply of relatively low-cost rental units in low-density neighborhoods” in California, but it is either illegal or undesirable for many homeowners to do so, thus limiting the potential for a significant price effect. Ramsey-Musolf (2018) is also skeptical of the ability of California’s ADUs to provide large-scale low-income housing, finding that, among the 759 ADUs constructed in California in the available dataset,  “no units were identified as available low-income housing.”  
+
+*Data + Definition of Sample Population*
+
+The sample population for this study is Monroe County, Indiana between 2009 and 2019. The analysis will include the following variables:
+- Number of White individuals (ACS)
+- Number of Black individuals (ACS)
+- Number of Native American individuals (ACS)
+- Number of Asian individuals (ACS)
+- Number of Native Hawaiian or Pacific Islander individuals (ACS)
+- Total population (ACS)
+- Number of housing units (ACS)
+- Median income (ACS)
+- Monthly housing costs (ACS)
+- Rental homes (ACS)
+
+*References*
+
+Rebecca Elisabeth Crane. 2020. “Is Granny in that Flat?: How Regulations Shape the Construction and Use of Accessory Dwelling Units in Los Angeles.” The California Digital Library. https://escholarship.org/uc/item/2wh204vz
+ 
+Mike Hanks. April 4, 2019. “Bloomington opens door to more affordable housing units.” Adams Publishing Group. https://www.hometownsource.com/sun_current/community/bloomington/bloomington-opens-door-to-more-affordable-housing-units/article_f17b8092-5652-11e9-8951-47a5d871ac49.html 
+ 
+Darrel Ramsey-Musolf. Accessory Dwelling Units as Low-Income Housing: California’s Faustian Bargain. Urban Sci. 2(3), 89. DOI: https://doi.org/10.3390/urbansci2030089
+ 
+United States Census Bureau. American Community Survey, 5-year estimates. 2009-2019.
+
+*Data*
+
+```{r}
+library(tidycensus)
+library(readxl)
+library(knitr)
+
+```
+
+```{r, message=FALSE}
+variables = c(white = "B02001_002",
+              black = "B02001_003",
+              indigenous= "B02001_004",
+              asian = "B02001_005",
+              pacificislander = "B02001_006",
+              population = "B01003_001",
+              housingunits = "B25001_001",
+              medianincome = "B19326_001",
+              monthly_house_cost = "B25105_001",
+              rented_homes = "B25003_003")
+demog_data <- get_acs(geography = "tract", 
+                   year = 2005,
+                   state = "IN", 
+                   county = "Monroe",
+                   survey = "acs1", 
+                   variables = variables,
+                   output = "wide") %>%
+  mutate(Year = 2005)
+
+for(i in 2005:2019) {
+  next_row <- get_acs(geography = "tract", 
+                   state = "IN", 
+                   county = "Monroe County", 
+                   year = i,
+                   variables = variables,
+                   output = "wide")  %>%
+  mutate(Year = i)
+  
+  demog_data <- rbind(demog_data, next_row)
+}
+```
+
+
