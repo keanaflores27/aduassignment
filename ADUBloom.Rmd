@@ -58,9 +58,9 @@ variables = c(white = "B02001_002",
               housingunits = "B25001_001",
               medianincome = "B19326_001",
               monthly_house_cost = "B25105_001",
-              pct_rental_homes = ***add***)
+              rented_homes = "B25003_003")
 
-demog_data <- get_acs(geography = "county", 
+demog_data <- get_acs(geography = "tract", 
                    state = "IN", 
                    county = "Monroe", 
                    year = 2009,
@@ -69,7 +69,7 @@ demog_data <- get_acs(geography = "county",
   mutate(Year = 2009)
 
 for(i in 2010:2019) {
-  next_row <- get_acs(geography = "county", 
+  next_row <- get_acs(geography = "tract", 
                    state = "IN", 
                    county = "Monroe", 
                    year = i,
@@ -79,15 +79,9 @@ for(i in 2010:2019) {
   
   demog_data <- rbind(demog_data, next_row)
 }
-```
 
+## You'll also want to calculate percentages
 
-```{r}
-rentalprices <- read_csv("Bloomington1.csv")
-```
-```{r}
-data <- left_join (demog_data, rentalprices) 
-
-kable(head(data))
+kable(head(demog_data))
 ```
 
