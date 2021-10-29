@@ -201,6 +201,7 @@ demos19 <- get_acs(geography = "county", state = "IN", county = "Monroe", year =
 ```{r}
 rentalprices <- read_csv("Bloomington1.csv")
 ```
+
 ```{r}
 data <- left_join (demos09, demos10) %>%
   left_join(demos11) %>%
