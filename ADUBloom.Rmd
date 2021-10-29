@@ -44,176 +44,44 @@ library(tidyverse)
 library(tidycensus)
 library(readxl)
 library(knitr)
-library(magrittr)
-library(dplyr)
-```
-
-```{r}
-v09 <- load_variables(2009, "acs1", cache = TRUE)
-
-View(v09)
-
-```
-
-```{r}
-demos09 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2009,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-
-```
-
-```{r}
-v10 <- load_variables(2010, "acs1", cache = TRUE)
-
-View(v10)
-
-```
-
-```{r}
-demos10 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2010,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-
 ```
 
 
-```{r}
-v11 <- load_variables(2011, "acs1", cache = TRUE)
 
-View(v11)
+```{r, message=FALSE}
+variables = c(white = "B02001_002",
+              black = "B02001_003",
+              indigenous= "B02001_004",
+              asian = "B02001_005",
+              pacificislander = "B02001_006",
+              population = "B01003_001",
+              housingunits = "B25001_001",
+              medianincome = "B19326_001",
+              monthly_house_cost = "B25105_001",
+              rented_homes = "B25003_003")
 
-```
+demog_data <- get_acs(geography = "tract", 
+                   state = "IN", 
+                   county = "Monroe", 
+                   year = 2009,
+                   variables = variables,
+                   output = "wide") %>%
+  mutate(Year = 2009)
 
-```{r}
-demos11 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2011,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-```
-
-```{r}
-v12 <- load_variables(2012, "acs1", cache = TRUE)
-
-View(v12)
-
-```
-
-```{r}
-demos12 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2012,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-
-```
-
-```{r}
-v13 <- load_variables(2013, "acs1", cache = TRUE)
-
-View(v13)
-
-```
-
-```{r}
-demos13 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2013,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-```
-
-```{r}
-v14 <- load_variables(2014, "acs1", cache = TRUE)
-
-View(v14)
-
-```
-
-```{r}
-demos14 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2014,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-
-```
-
-```{r}
-v15 <- load_variables(2015, "acs1", cache = TRUE)
-
-View(v15)
-
-```
-
-```{r}
-demos15 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2015,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-```
-
-```{r}
-v16 <- load_variables(2016, "acs1", cache = TRUE)
-
-View(v16)
-
-```
-
-```{r}
-demos16 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2016,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-```
-
-```{r}
-v17 <- load_variables(2017, "acs1", cache = TRUE)
-
-View(v17)
-
-```
-
-```{r}
-demos17 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2017,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-
-```
-
-```{r}
-v18 <- load_variables(2018, "acs1", cache = TRUE)
-
-View(v18)
-
-```
-
-```{r}
-demos18 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2018,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-
-```
-
-```{r}
-v19 <- load_variables(2019, "acs1", cache = TRUE)
-
-View(v19)
-```
-
-```{r}
-demos19 <- get_acs(geography = "county", state = "IN", county = "Monroe", year = 2019,
-                   variables = c(all = "B02001_001", white = "B02001_002", black = "B02001_003", indigenous= "B02001_004", asian = "B02001_005", pacificislander = "B02001_006", population = "B01003_001", housingunits = "B25001_001", medianincome = "B19326_001"),
-                   output = "wide")
-
-```
-
-```{r}
-rentalprices <- read_csv("Bloomington1.csv")
-```
-```{r}
-data <- left_join (demos09, demos10) %>%
-  left_join(demos11) %>%
-  left_join(demos12) %>%
-  left_join(demos13) %>%
-  left_join(demos14) %>%
-  left_join(demos15) %>%
-  left_join(demos16) %>%
-  left_join(demos17) %>%
-  left_join(demos18) %>%
-  left_join(demos19) %>%
-  left_join(rentalprices)
+for(i in 2010:2019) {
+  next_row <- get_acs(geography = "tract", 
+                   state = "IN", 
+                   county = "Monroe", 
+                   year = i,
+                   variables = variables,
+                   output = "wide")  %>%
+  mutate(Year = i)
   
-kable(head(data))
+  demog_data <- rbind(demog_data, next_row)
+}
+
+## You'll also want to calculate percentages
+
+kable(head(demog_data))
 ```
 
