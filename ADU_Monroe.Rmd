@@ -1,0 +1,69 @@
+---
+title: "Untitled"
+author: "Keana Flores"
+date: "10/31/2021"
+output: html_document
+---
+
+```{r}
+library(tidycensus)
+library(readxl)
+library(knitr)
+library(survey)
+library(srvyr)
+
+```
+
+```{r}
+install.packages('ipumsr')
+install.packages('survey')
+install.packages('srvyr')
+```
+
+```{r}
+library(ipumsr)
+```
+
+
+```{r}
+ddi <- read_ipums_ddi("usa_00005.xml")
+data <- read_ipums_micro(ddi) %>%
+  filter(RENT > 0) %>%
+    mutate(RACE = as_factor(RACE)) 
+
+```
+
+```{r}
+svy_data <- data %>%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = HHWT)
+
+```
+
+```{r}
+
+income_mean <- svy_data %>%
+  summarize(mean = survey_mean(FTOTINC, vartype = c("ci", "var"), na.rm = TRUE))
+
+rent_mean <- svy_data %>%
+  summarize(mean = survey_mean(RENT, vartype = c("ci", "var"), na.rm = TRUE))
+
+units_mean_ <- svy_data %>%
+  summarize(mean = survey_mean(UNITSSTR, vartype = c("ci", "var"), na.rm = TRUE))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
