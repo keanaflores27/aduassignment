@@ -34,6 +34,14 @@ data <- read_ipums_micro(ddi) %>%
 ```
 
 ```{r}
+group_by(data, YEAR)
+group_data <- group_by(data, YEAR)
+  
+```
+
+
+
+```{r}
 svy_data <- data %>%
   as_survey_design(ids = CLUSTER,
                    strata = STRATA,
@@ -54,6 +62,46 @@ units_mean_ <- svy_data %>%
 
 ```
 
+```{r}
+income_quants <- svy_data %>%
+  summarise(qs = survey_quantile(FTOTINC, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL,
+                                     na.rm = TRUE)) 
+
+rent_quants <- svy_data %>%
+  summarise(quants = survey_quantile(RENT, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL)) 
+
+units_quants <- svy_data %>%
+  summarise(quants = survey_quantile(UNITSSTR, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL))
+
+
+```
+
+```{r}
+mean_summary <- rbind(income_mean, rent_mean, units_mean) %>%
+    mutate(variable = c("Median Family Income",
+                      "Monthly Average Rent",
+                      "Units in Structure"))
+
+quant_summary <- rbind(income_quants, rent_quants, units_quants) %>%
+    mutate(variable = c("Median Family Income",
+                      "Monthly Average Rent",
+                      "Units in Structure"))
+
+summary <- left_join(mean_summary, quant_summary) %>%
+  mutate(sd = mean_var^0.5) %>%
+  mutate(IQR = quants_q75 - quants_q25) %>%
+  rename(median = quants_q50) %>%
+  select(variable, mean, mean_low, mean_upp, median, sd, IQR)
+
+kable(summary, digits=2)
+
+```
 
 
 
