@@ -47,42 +47,96 @@ United States Census Bureau. American Community Survey, 5-year estimates. 2009-2
 
 ```{r}
 library(tidycensus)
-library(readxl)
 library(knitr)
+library(ipumsr)
+library(survey)
+library(srvyr)
+library(dplyr)
+```
+
+```{r}
+ddi <- read_ipums_ddi("/Users/AMikula/Desktop/usa_00005.xml")
+data <- read_ipums_micro(ddi) %>%
+  na_if(9999999) %>%
+  filter(RENT > 0) %>%
+  mutate(RACE = as_factor(RACE))
+```
+
+```{r}
+svy_data <- data %>%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = PERWT)
+```
+
+```{r}
+units_mean <- svy_data %>%
+  summarize(mean = survey_mean(UNITSSTR, vartype = c("ci", "var"), na.rm = TRUE))
+
+income_mean <- svy_data %>%
+  summarize(mean = survey_mean(FTOTINC, vartype = c("ci", "var"), na.rm = TRUE))
+
+rent_mean <- svy_data %>%
+  summarize(mean = survey_mean(RENT, vartype = c("ci", "var"), na.rm = TRUE))
+```
+
+```{r}
+units_time_quants <- svy_data %>%
+  summarize(quants = survey_quantile(UNITSSTR, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL)) 
+
+income_quants <- svy_data %>%
+  summarize(quants = survey_quantile(FTOTINC, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL)) 
+
+rent_quants <- svy_data %>%
+  summarize(quants = survey_quantile(RENT, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL))
+```
+
+```{r}
 
 ```
 
-```{r, message=FALSE}
-variables = c(white = "B02001_002",
-              black = "B02001_003",
-              indigenous= "B02001_004",
-              asian = "B02001_005",
-              pacificislander = "B02001_006",
-              population = "B01003_001",
-              housingunits = "B25001_001",
-              medianincome = "B19326_001",
-              monthly_house_cost = "B25105_001",
-              rented_homes = "B25003_003")
-demog_data <- get_acs(geography = "tract", 
-                   year = 2005,
-                   state = "IN", 
-                   county = "Monroe",
-                   survey = "acs1", 
-                   variables = variables,
-                   output = "wide") %>%
-  mutate(Year = 2005)
+```{r}
 
-for(i in 2005:2019) {
-  next_row <- get_acs(geography = "tract", 
-                   state = "IN", 
-                   county = "Monroe County", 
-                   year = i,
-                   variables = variables,
-                   output = "wide")  %>%
-  mutate(Year = i)
-  
-  demog_data <- rbind(demog_data, next_row)
-}
 ```
 
+```{r}
 
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
