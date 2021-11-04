@@ -1,0 +1,139 @@
+---
+title: "ADUMonroe"
+output: html_document
+---
+
+```{r}
+library(tidycensus)
+library(readxl)
+library(knitr)
+library(survey)
+library(srvyr)
+```
+
+```{r}
+install.packages('ipumsr')
+install.packages('survey')
+install.packages('srvyr')
+```
+
+```{r}
+library(ipumsr)
+```
+
+
+```{r}
+ddi <- read_ipums_ddi("/Users/AMikula/Desktop/usa_00005.xml")
+data <- read_ipums_micro(ddi) %>%
+  filter(RENT > 0) %>%
+    mutate(RACE = as_factor(RACE)) 
+```
+
+```{r}
+group_by(data, YEAR)
+group_data <- group_by(data, YEAR)
+  
+```
+
+
+
+```{r}
+svy_data <- data %>%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = HHWT)
+```
+
+```{r}
+income_mean <- svy_data %>%
+  summarize(mean = survey_mean(FTOTINC, vartype = c("ci", "var"), na.rm = TRUE))
+rent_mean <- svy_data %>%
+  summarize(mean = survey_mean(RENT, vartype = c("ci", "var"), na.rm = TRUE))
+units_mean_ <- svy_data %>%
+  summarize(mean = survey_mean(UNITSSTR, vartype = c("ci", "var"), na.rm = TRUE))
+```
+
+```{r}
+income_quants <- svy_data %>%
+  summarise(qs = survey_quantile(FTOTINC, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL,
+                                     na.rm = TRUE)) 
+rent_quants <- svy_data %>%
+  summarise(quants = survey_quantile(RENT, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL)) 
+units_quants <- svy_data %>%
+  summarise(quants = survey_quantile(UNITSSTR, 
+                                     quantiles =  c(0.25, 0.5, 0.75),
+                                     vartype = NULL))
+```
+
+```{r}
+mean_summary <- rbind(income_mean, rent_mean, units_mean) %>%
+    mutate(variable = c("Median Family Income",
+                      "Monthly Average Rent",
+                      "Units in Structure"))
+quant_summary <- rbind(income_quants, rent_quants, units_quants) %>%
+    mutate(variable = c("Median Family Income",
+                      "Monthly Average Rent",
+                      "Units in Structure"))
+summary <- left_join(mean_summary, quant_summary) %>%
+  mutate(sd = mean_var^0.5) %>%
+  mutate(IQR = quants_q75 - quants_q25) %>%
+  rename(median = quants_q50) %>%
+  select(variable, mean, mean_low, mean_upp, median, sd, IQR)
+kable(summary, digits=2)
+```
+
+```{r}
+corrs <- svycor(~FTOTINC + RENT + UNITSSTR, design = svy_data, sig.stats = TRUE)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
