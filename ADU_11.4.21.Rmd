@@ -9,16 +9,10 @@ library(readxl)
 library(knitr)
 library(survey)
 library(srvyr)
-```
-
-```{r}
-install.packages('ipumsr')
-install.packages('survey')
-install.packages('srvyr')
-```
-
-```{r}
 library(ipumsr)
+library(jtools)
+
+library(weights)
 ```
 
 
@@ -70,7 +64,7 @@ units_quants <- svy_data %>%
 ```
 
 ```{r}
-mean_summary <- rbind(income_mean, rent_mean, units_mean) %>%
+mean_summary <- rbind(income_mean, rent_mean, units_mean) %>% 
     mutate(variable = c("Median Family Income",
                       "Monthly Average Rent",
                       "Units in Structure"))
@@ -91,31 +85,57 @@ corrs <- svycor(~FTOTINC + RENT + UNITSSTR, design = svy_data, sig.stats = TRUE)
 ```
 
 ```{r}
-
+corrs$cors
 ```
 
 ```{r}
-
+corrs$p.values
 ```
 
 ```{r}
-
+corrs$std.err
 ```
 
 ```{r}
+corrs_ci_low <- corrs$cors - 1.96*corrs$std.err
 
+corrs_ci_upp <- corrs$cors + 1.96*corrs$std.err
 ```
 
 ```{r}
-
+corrs_ci_low
 ```
 
 ```{r}
-
+corrs_ci_upp
 ```
 
 ```{r}
+corrs_low_df <- as_tibble(corrs_ci_low) %>%
+  mutate(variable = c("Income", "Rent", "Units in building")) %>%
+  rename(FTOTINC_low = FTOTINC,
+         RENT_low = RENT,
+         UNITSSTR_low = UNITSSTR)
 
+corrs_upp_df <- as_tibble(corrs_ci_upp) %>%
+  mutate(variable = c("Income", "Rent", "Units per structure")) %>%
+  rename(FTOTINC_upp = FTOTINC,
+         RENT_upp = RENT,
+         UNITSSTR_upp = UNITSSTR)
+
+corrs_pretty_int <- left_join(corrs_low_df, corrs_upp_df) %>%
+  mutate(`Income` = paste(prettyNum(FTOTINC_low, digits = 3), 
+                                 " to ", 
+                                 prettyNum(FTOTINC_upp, digits = 3))) %>%
+  mutate(`Rent` = paste(prettyNum(RENT_low, digits = 3), 
+                                 " to ", 
+                                 prettyNum(RENT_upp, digits = 3))) %>%
+  mutate(`Units in building` = paste(prettyNum(UNITSSTR_low, digits = 3), 
+                                 " to ", 
+                                 prettyNum(UNITSSTR_upp, digits = 3))) %>%
+  select(variable, `Income`, `Rent`, `Units in building`)
+  
+kable(corrs_pretty_int)
 ```
 
 ```{r}
