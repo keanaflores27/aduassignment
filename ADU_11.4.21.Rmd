@@ -14,6 +14,9 @@ library(jtools)
 library(weights)
 ```
 
+```{r}
+library(fastDummies)
+```
 
 ```{r}
 ddi <- read_ipums_ddi("/Users/AMikula/Desktop/usa_00005.xml")
@@ -166,19 +169,32 @@ svyttest(RENT ~ WHITE, svy_data)
 ```
 
 ```{r}
+data <- data %>%
+  mutate(RACE = relevel(RACE, "White, Black/African American/Negro, American Indian or Alaska Native, Chinese, Japanese, Other Asian or Pacific Islander, Other race, nec, Two Major Races, or Three or more major races"))
 
+svy_data <- data %>%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = PERWT)
+
+race_model <- svyglm(RACE ~ RACE, svy_data)
+
+summary(race_model)
 ```
 
 ```{r}
+hu_model <- svyglm(RENT ~ UNITSSTR, design = svy_data)
 
+summary(hu_model)
 ```
 
 ```{r}
-
-```
-
-```{r}
-
+df$White <- ifelse(df$RACE == 'White', 1, 0) 
+df$Black <- ifelse(df$RACE == 'Black/African American/Negro', 1, 0)
+df$Native <- ifelse(df$RACE == 'American Indian or Alaska Native', 1, 0)
+df$Asian <- ifelse(df$RACE == 'Chinese,' 'Japanese', 'Other Asian or Pacific Islander', 1, 0)
+df$Other <- ifelse(df$RACE == 'Other race, nec', 1, 0)
+df$Multiple <- ifelse(df$RACE == 'Two Major Races', 'Three or more major races', 1, 0)
 ```
 
 ```{r}
