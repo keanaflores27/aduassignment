@@ -11,7 +11,6 @@ library(survey)
 library(srvyr)
 library(ipumsr)
 library(jtools)
-
 library(weights)
 ```
 
@@ -81,7 +80,7 @@ kable(summary, digits=2)
 ```
 
 ```{r}
-corrs <- svycor(~FTOTINC + RENT + UNITSSTR, design = svy_data, sig.stats = TRUE) 
+corrs <- svycor(~FTOTINC + RENT + UNITSSTR + YEAR, design = svy_data, sig.stats = TRUE) 
 ```
 
 ```{r}
@@ -112,16 +111,18 @@ corrs_ci_upp
 
 ```{r}
 corrs_low_df <- as_tibble(corrs_ci_low) %>%
-  mutate(variable = c("Income", "Rent", "Units in building")) %>%
+  mutate(variable = c("Income", "Rent", "Units in building", "Year")) %>%
   rename(FTOTINC_low = FTOTINC,
          RENT_low = RENT,
-         UNITSSTR_low = UNITSSTR)
+         UNITSSTR_low = UNITSSTR,
+         YEAR_low = YEAR)
 
 corrs_upp_df <- as_tibble(corrs_ci_upp) %>%
-  mutate(variable = c("Income", "Rent", "Units per structure")) %>%
+  mutate(variable = c("Income", "Rent", "Units per structure", "Year")) %>%
   rename(FTOTINC_upp = FTOTINC,
          RENT_upp = RENT,
-         UNITSSTR_upp = UNITSSTR)
+         UNITSSTR_upp = UNITSSTR,
+         YEAR_upp = YEAR)
 
 corrs_pretty_int <- left_join(corrs_low_df, corrs_upp_df) %>%
   mutate(`Income` = paste(prettyNum(FTOTINC_low, digits = 3), 
@@ -133,9 +134,55 @@ corrs_pretty_int <- left_join(corrs_low_df, corrs_upp_df) %>%
   mutate(`Units in building` = paste(prettyNum(UNITSSTR_low, digits = 3), 
                                  " to ", 
                                  prettyNum(UNITSSTR_upp, digits = 3))) %>%
-  select(variable, `Income`, `Rent`, `Units in building`)
+  mutate(`Year` = paste(prettyNum(YEAR_low, digits = 3), 
+                                 " to ", 
+                                 prettyNum(YEAR_upp, digits = 3))) %>%
+  select(variable, `Income`, `Rent`, `Units in building`, `Year`)
   
 kable(corrs_pretty_int)
+```
+
+```{r}
+rent_model <- svyglm(RENT ~ YEAR, design = svy_data)
+
+summary(rent_model)
+```
+
+```{r}
+inc_model <- svyglm(RENT ~ FTOTINC, design = svy_data)
+
+summary(inc_model)
+```
+
+```{r}
+dummies <- data.frame(numbers = 1:9,
+                    RACE  = c("White", "Black/African American/Negro", "American Indian or Alaska Native", "Chinese", "Japanese", "Other Asian or Pacific Islander", "Other race, nec", "Two Major Races", "Three or more major races"),
+                    stringsAsFactors = FALSE)
+knitr::kable(dummies)
+```
+
+```{r}
+svyttest(RENT ~ WHITE, svy_data)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
 ```
 
 ```{r}
