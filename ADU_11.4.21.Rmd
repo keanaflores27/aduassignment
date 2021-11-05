@@ -87,7 +87,7 @@ kable(summary, digits=2)
 ```
 
 ```{r}
-corrs <- svycor(~FTOTINC + RENT + UNITSSTR, design = svy_data, sig.stats = TRUE)
+corrs <- svycor(~FTOTINC + RENT + UNITSSTR, design = svy_data, sig.stats = TRUE) 
 ```
 
 ```{r}
