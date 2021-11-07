@@ -3,8 +3,10 @@ title: "ADUMonroe"
 output: html_document
 ---
 
+
 ```{r}
 library(tidycensus)
+library(tidyverse)
 library(readxl)
 library(knitr)
 library(survey)
@@ -12,14 +14,11 @@ library(srvyr)
 library(ipumsr)
 library(jtools)
 library(weights)
-```
-
-```{r}
 library(fastDummies)
 ```
 
 ```{r}
-ddi <- read_ipums_ddi("/Users/AMikula/Desktop/usa_00005.xml")
+ddi <- read_ipums_ddi("/Users/Amikula/Desktop/usa_00005.xml")
 data <- read_ipums_micro(ddi) %>%
   filter(RENT > 0) %>%
     mutate(RACE = as_factor(RACE)) 
@@ -41,45 +40,12 @@ svy_data <- data %>%
 ```
 
 ```{r}
-income_mean <- svy_data %>%
-  summarize(mean = survey_mean(FTOTINC, vartype = c("ci", "var"), na.rm = TRUE))
-rent_mean <- svy_data %>%
-  summarize(mean = survey_mean(RENT, vartype = c("ci", "var"), na.rm = TRUE))
-units_mean_ <- svy_data %>%
-  summarize(mean = survey_mean(UNITSSTR, vartype = c("ci", "var"), na.rm = TRUE))
-```
-
-```{r}
-income_quants <- svy_data %>%
-  summarise(qs = survey_quantile(FTOTINC, 
-                                     quantiles =  c(0.25, 0.5, 0.75),
-                                     vartype = NULL,
-                                     na.rm = TRUE)) 
-rent_quants <- svy_data %>%
-  summarise(quants = survey_quantile(RENT, 
-                                     quantiles =  c(0.25, 0.5, 0.75),
-                                     vartype = NULL)) 
-units_quants <- svy_data %>%
-  summarise(quants = survey_quantile(UNITSSTR, 
-                                     quantiles =  c(0.25, 0.5, 0.75),
-                                     vartype = NULL))
-```
-
-```{r}
-mean_summary <- rbind(income_mean, rent_mean, units_mean) %>% 
-    mutate(variable = c("Median Family Income",
-                      "Monthly Average Rent",
-                      "Units in Structure"))
-quant_summary <- rbind(income_quants, rent_quants, units_quants) %>%
-    mutate(variable = c("Median Family Income",
-                      "Monthly Average Rent",
-                      "Units in Structure"))
-summary <- left_join(mean_summary, quant_summary) %>%
-  mutate(sd = mean_var^0.5) %>%
-  mutate(IQR = quants_q75 - quants_q25) %>%
-  rename(median = quants_q50) %>%
-  select(variable, mean, mean_low, mean_upp, median, sd, IQR)
-kable(summary, digits=2)
+data$White <- ifelse(data$RACE == 'White', 1, 0) 
+data$Black <- ifelse(data$RACE == 'Black/African American/Negro', 1, 0)
+data$Native <- ifelse(data$RACE == 'American Indian or Alaska Native', 1, 0)
+data$Asian <- ifelse(data$RACE %in% c('Chinese', 'Japanese', 'Other Asian or Pacific Islander'), 1, 0)
+data$Other <- ifelse(data$RACE == 'Other race, nec', 1, 0)
+data$Multiple <- ifelse(data$RACE %in% c('Two major races', 'Three or more major races'), 1, 0)
 ```
 
 ```{r}
@@ -100,7 +66,6 @@ corrs$std.err
 
 ```{r}
 corrs_ci_low <- corrs$cors - 1.96*corrs$std.err
-
 corrs_ci_upp <- corrs$cors + 1.96*corrs$std.err
 ```
 
@@ -119,14 +84,12 @@ corrs_low_df <- as_tibble(corrs_ci_low) %>%
          RENT_low = RENT,
          UNITSSTR_low = UNITSSTR,
          YEAR_low = YEAR)
-
 corrs_upp_df <- as_tibble(corrs_ci_upp) %>%
   mutate(variable = c("Income", "Rent", "Units per structure", "Year")) %>%
   rename(FTOTINC_upp = FTOTINC,
          RENT_upp = RENT,
          UNITSSTR_upp = UNITSSTR,
          YEAR_upp = YEAR)
-
 corrs_pretty_int <- left_join(corrs_low_df, corrs_upp_df) %>%
   mutate(`Income` = paste(prettyNum(FTOTINC_low, digits = 3), 
                                  " to ", 
@@ -147,76 +110,46 @@ kable(corrs_pretty_int)
 
 ```{r}
 rent_model <- svyglm(RENT ~ YEAR, design = svy_data)
-
 summary(rent_model)
 ```
 
 ```{r}
 inc_model <- svyglm(RENT ~ FTOTINC, design = svy_data)
-
 summary(inc_model)
 ```
 
 ```{r}
-dummies <- data.frame(numbers = 1:9,
-                    RACE  = c("White", "Black/African American/Negro", "American Indian or Alaska Native", "Chinese", "Japanese", "Other Asian or Pacific Islander", "Other race, nec", "Two Major Races", "Three or more major races"),
-                    stringsAsFactors = FALSE)
-knitr::kable(dummies)
-```
-
-```{r}
-svyttest(RENT ~ WHITE, svy_data)
-```
-
-```{r}
-data <- data %>%
-  mutate(RACE = relevel(RACE, "White, Black/African American/Negro, American Indian or Alaska Native, Chinese, Japanese, Other Asian or Pacific Islander, Other race, nec, Two Major Races, or Three or more major races"))
-
-svy_data <- data %>%
-  as_survey_design(ids = CLUSTER,
-                   strata = STRATA,
-                   weights = PERWT)
-
-race_model <- svyglm(RACE ~ RACE, svy_data)
-
-summary(race_model)
-```
-
-```{r}
 hu_model <- svyglm(RENT ~ UNITSSTR, design = svy_data)
-
 summary(hu_model)
 ```
 
 ```{r}
-df$White <- ifelse(df$RACE == 'White', 1, 0) 
-df$Black <- ifelse(df$RACE == 'Black/African American/Negro', 1, 0)
-df$Native <- ifelse(df$RACE == 'American Indian or Alaska Native', 1, 0)
-df$Asian <- ifelse(df$RACE == 'Chinese,' 'Japanese', 'Other Asian or Pacific Islander', 1, 0)
-df$Other <- ifelse(df$RACE == 'Other race, nec', 1, 0)
-df$Multiple <- ifelse(df$RACE == 'Two Major Races', 'Three or more major races', 1, 0)
+white_model <- svyglm(RENT ~ White, design = svy_data)
+summary(white_model)
+```
 ```
 
 ```{r}
-
+black_model <- svyglm(RENT ~ Black, design = svy_data)
+summary(black_model)
 ```
 
 ```{r}
-
+native_model <- svyglm(RENT ~ Native, design = svy_data)
+summary(native_model)
 ```
 
 ```{r}
-
+asian_model <- svyglm(RENT ~ Asian, design = svy_data)
+summary(asian_model)
 ```
 
 ```{r}
-
+other_model <- svyglm(RENT ~ Other, design = svy_data)
+summary(other_model)
 ```
 
 ```{r}
-
-```
-
-```{r}
-
+multiple_model <- svyglm(RENT ~ Multiple, design = svy_data)
+summary(multiple_model)
 ```
