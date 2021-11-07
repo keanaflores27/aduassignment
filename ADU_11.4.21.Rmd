@@ -127,7 +127,6 @@ summary(hu_model)
 white_model <- svyglm(RENT ~ White, design = svy_data)
 summary(white_model)
 ```
-```
 
 ```{r}
 black_model <- svyglm(RENT ~ Black, design = svy_data)
