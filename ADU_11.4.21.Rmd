@@ -160,7 +160,13 @@ other_model <- svyglm(RENT ~ Other, design = svy_data)
 summary(other_model)
 ```
 
+The above regression predicts that, all else equal, a person of races not otherwise included in the above analysis has an average rent $125.67 lower than an average "non-other" person. It is not a statistically significant relationship at the .05 level, likely because of a small sample size of people of "other races" in Monroe County. Given the relatively low p-value, however, we're somewhat confident that the relationship would be significant with a larger sample size.
+
 ```{r}
 multiple_model <- svyglm(RENT ~ Multiple, design = svy_data)
 summary(multiple_model)
 ```
+
+The above regression predicts that, all else equal, a person of multiple races has an average rent $132.03 lower than an average person with one race. It is a statistically significant relationship.
+
+Overall, the regressions with the race dummy variables probably reflect characteristics about the incomes of people of various races as well, not just factors like discrimination that are associated with the race variables alone. Once we get into multivariate analysis next week, it will be interesting to see how the magnitude and significance of these race effects change in our models.
