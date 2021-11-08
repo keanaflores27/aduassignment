@@ -31,6 +31,14 @@ group_data <- group_by(data, YEAR)
   
 ```
 
+```{r}
+data$White <- ifelse(data$RACE == 'White', 1, 0) 
+data$Black <- ifelse(data$RACE == 'Black/African American/Negro', 1, 0)
+data$Native <- ifelse(data$RACE == 'American Indian or Alaska Native', 1, 0)
+data$Asian <- ifelse(data$RACE %in% c('Chinese', 'Japanese', 'Other Asian or Pacific Islander'), 1, 0)
+data$Other <- ifelse(data$RACE == 'Other race, nec', 1, 0)
+data$Multiple <- ifelse(data$RACE %in% c('Two major races', 'Three or more major races'), 1, 0)
+```
 
 
 ```{r}
@@ -165,7 +173,7 @@ knitr::kable(dummies)
 ```
 
 ```{r}
-svyttest(RENT ~ WHITE, svy_data)
+svyttest(RENT ~ White, design=svy_data)
 ```
 
 ```{r}
@@ -177,7 +185,7 @@ svy_data <- data %>%
                    strata = STRATA,
                    weights = PERWT)
 
-race_model <- svyglm(RACE ~ RACE, svy_data)
+race_model <- svyglm(RACE ~ RACE, design=svy_data)
 
 summary(race_model)
 ```
