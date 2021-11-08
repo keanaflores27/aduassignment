@@ -151,4 +151,3 @@ summary(other_model)
 ```{r}
 multiple_model <- svyglm(RENT ~ Multiple, design = svy_data)
 summary(multiple_model)
-```
