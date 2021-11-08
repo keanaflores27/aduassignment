@@ -18,7 +18,7 @@ library(fastDummies)
 ```
 
 ```{r}
-ddi <- read_ipums_ddi("C:/Users/yedah/Desktop/WORK/02 CLASSES/05 BUILT ENVIRONMENT, NATURE AND HEALTH/01 GIS/aduassignment/usa_00005.xml")
+ddi <- read_ipums_ddi("/Users/Amikula/Desktop/usa_00005.xml")
 data <- read_ipums_micro(ddi) %>%
   filter(RENT > 0) %>%
     mutate(RACE = as_factor(RACE)) 
@@ -149,3 +149,4 @@ summary(other_model)
 ```{r}
 multiple_model <- svyglm(RENT ~ Multiple, design = svy_data)
 summary(multiple_model)
+```
