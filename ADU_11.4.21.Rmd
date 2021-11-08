@@ -111,35 +111,49 @@ rent_model <- svyglm(RENT ~ YEAR, design = svy_data)
 summary(rent_model)
 ```
 
+The above regression predicts that the rent in Monroe County will rise by an average of $14.09 per year. It is statistically significant and strong in magnitude, although the line of best fit implies that, for much of the 19th century and earlier, the average monthly rent was a negative number, which is not an intuitive result.
+
 ```{r}
 inc_model <- svyglm(RENT ~ FTOTINC, design = svy_data)
 summary(inc_model)
 ```
+
+The above regression implies that, for every dollar increase in family income, the rent the family pays decreases by a small amount. It is not a statistically significant relationship. Perhaps we could achieve a more usable result by expressing income in terms of thousands of dollars. 
 
 ```{r}
 hu_model <- svyglm(RENT ~ UNITSSTR, design = svy_data)
 summary(hu_model)
 ```
 
+The above regression predicts that, for every 1-unit increase in the number of housing units in the structure, rents decline by about $7.66. While this is a significant magnitude, the relationship is not statistically significant. Notice that the intercept implies that structures with 1 unit have an average rent of (893.76 - 7.66 = ) 886.10 dollars per month.
+
 ```{r}
 white_model <- svyglm(RENT ~ White, design = svy_data)
 summary(white_model)
 ```
+
+The above regression predicts that, all else equal, a white person has an average rent $64.05 higher than an average non-white person. It is a statistically significant relationship.
 
 ```{r}
 black_model <- svyglm(RENT ~ Black, design = svy_data)
 summary(black_model)
 ```
 
+The above regression predicts that, all else equal, a black person has an average rent $148.72 lower than an average non-black person. It is a statistically significant relationship.
+
 ```{r}
 native_model <- svyglm(RENT ~ Native, design = svy_data)
 summary(native_model)
 ```
 
+The above regression predicts that, all else equal, a Native American person has an average rent $273.82 lower than an average non-native person. It is a highly statistically significant relationship.
+
 ```{r}
 asian_model <- svyglm(RENT ~ Asian, design = svy_data)
 summary(asian_model)
 ```
+
+The above regression predicts that, all else equal, an Asian person has an average rent $43.97 higher than an average non-Asian person. It is not a statistically significant relationship, likely because of a small sample size of Asians in Monroe County.
 
 ```{r}
 other_model <- svyglm(RENT ~ Other, design = svy_data)
