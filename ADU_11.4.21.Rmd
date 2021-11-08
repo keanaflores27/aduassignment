@@ -18,7 +18,7 @@ library(fastDummies)
 ```
 
 ```{r}
-ddi <- read_ipums_ddi("/Users/Amikula/Desktop/usa_00005.xml")
+ddi <- read_ipums_ddi("C:/Users/yedah/Desktop/WORK/02 CLASSES/05 BUILT ENVIRONMENT, NATURE AND HEALTH/01 GIS/aduassignment/usa_00005.xml")
 data <- read_ipums_micro(ddi) %>%
   filter(RENT > 0) %>%
     mutate(RACE = as_factor(RACE)) 
@@ -30,15 +30,6 @@ group_data <- group_by(data, YEAR)
   
 ```
 
-
-
-```{r}
-svy_data <- data %>%
-  as_survey_design(ids = CLUSTER,
-                   strata = STRATA,
-                   weights = HHWT)
-```
-
 ```{r}
 data$White <- ifelse(data$RACE == 'White', 1, 0) 
 data$Black <- ifelse(data$RACE == 'Black/African American/Negro', 1, 0)
@@ -46,6 +37,13 @@ data$Native <- ifelse(data$RACE == 'American Indian or Alaska Native', 1, 0)
 data$Asian <- ifelse(data$RACE %in% c('Chinese', 'Japanese', 'Other Asian or Pacific Islander'), 1, 0)
 data$Other <- ifelse(data$RACE == 'Other race, nec', 1, 0)
 data$Multiple <- ifelse(data$RACE %in% c('Two major races', 'Three or more major races'), 1, 0)
+```
+
+```{r}
+svy_data <- data %>%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = HHWT)
 ```
 
 ```{r}
@@ -151,4 +149,3 @@ summary(other_model)
 ```{r}
 multiple_model <- svyglm(RENT ~ Multiple, design = svy_data)
 summary(multiple_model)
-```
