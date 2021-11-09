@@ -170,3 +170,8 @@ summary(multiple_model)
 The above regression predicts that, all else equal, a person of multiple races has an average rent $132.03 lower than an average person with one race. It is a statistically significant relationship.
 
 Overall, the regressions with the race dummy variables probably reflect characteristics about the incomes of people of various races as well, not just factors like discrimination that are associated with the race variables alone. Once we get into multivariate analysis next week, it will be interesting to see how the magnitude and significance of these race effects change in our models.
+
+```{r}
+multivariate_model <- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_data)
+summary(multivariate_model)
+```
