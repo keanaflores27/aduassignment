@@ -149,7 +149,7 @@ summary(native_model)
 The above regression predicts that, all else equal, a Native American person has an average rent $273.82 lower than an average non-native person. It is a highly statistically significant relationship.
 
 ```{r}
-asian_model <- svyglm(RENT ~ Asian, design = svy_data)d
+asian_model <- svyglm(RENT ~ Asian, design = svy_data)
 summary(asian_model)
 ```
 
