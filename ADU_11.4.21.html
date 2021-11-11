@@ -268,30 +268,30 @@ data$Multiple &lt;- ifelse(data$RACE %in% c(&#39;Two major races&#39;, &#39;Thre
 ## YEAR      0.005025075  0.119218920 -0.02116139  0.999999999</code></pre>
 <pre class="r"><code>corrs$p.values</code></pre>
 <pre><code>##          FTOTINC  RENT UNITSSTR  YEAR
-## FTOTINC    0.000 0.188    0.000 0.528
-## RENT       0.188 0.000    0.012 0.000
-## UNITSSTR   0.000 0.012    0.000 0.130
-## YEAR       0.528 0.000    0.130 0.000</code></pre>
+## FTOTINC    0.000 0.172    0.000 0.552
+## RENT       0.172 0.000    0.006 0.000
+## UNITSSTR   0.000 0.006    0.000 0.124
+## YEAR       0.552 0.000    0.124 0.000</code></pre>
 <pre class="r"><code>corrs$std.err</code></pre>
 <pre><code>##              FTOTINC        RENT   UNITSSTR       YEAR
-## FTOTINC  0.000000000 0.008275669 0.01546803 0.01311477
-## RENT     0.008275669 0.000000000 0.01536629 0.01382692
-## UNITSSTR 0.015468031 0.015366291 0.00000000 0.01432222
-## YEAR     0.013114773 0.013826920 0.01432222 0.00000000</code></pre>
+## FTOTINC  0.000000000 0.007964024 0.01362193 0.01240391
+## RENT     0.007964024 0.000000000 0.01456981 0.01366609
+## UNITSSTR 0.013621931 0.014569812 0.00000000 0.01345506
+## YEAR     0.012403908 0.013666094 0.01345506 0.00000000</code></pre>
 <pre class="r"><code>corrs_ci_low &lt;- corrs$cors - 1.96*corrs$std.err
 corrs_ci_upp &lt;- corrs$cors + 1.96*corrs$std.err</code></pre>
 <pre class="r"><code>corrs_ci_low</code></pre>
 <pre><code>##              FTOTINC        RENT    UNITSSTR        YEAR
-## FTOTINC   1.00000000 -0.02473197 -0.08366045 -0.02067988
-## RENT     -0.02473197  1.00000000 -0.06870864  0.09211816
-## UNITSSTR -0.08366045 -0.06870864  1.00000000 -0.04923293
-## YEAR     -0.02067988  0.09211816 -0.04923293  1.00000000</code></pre>
+## FTOTINC   1.00000000 -0.02412115 -0.08004210 -0.01928658
+## RENT     -0.02412115  1.00000000 -0.06714754  0.09243338
+## UNITSSTR -0.08004210 -0.06714754  1.00000000 -0.04753330
+## YEAR     -0.01928658  0.09243338 -0.04753330  1.00000000</code></pre>
 <pre class="r"><code>corrs_ci_upp</code></pre>
 <pre><code>##               FTOTINC         RENT     UNITSSTR        YEAR
-## FTOTINC   1.000000000  0.007708648 -0.023025771 0.030730031
-## RENT      0.007708648  1.000000000 -0.008472782 0.146319683
-## UNITSSTR -0.023025771 -0.008472782  1.000000000 0.006910159
-## YEAR      0.030730031  0.146319683  0.006910159 0.999999999</code></pre>
+## FTOTINC   1.000000000  0.007097825 -0.026644127 0.029336735
+## RENT      0.007097825  1.000000000 -0.010033879 0.146004465
+## UNITSSTR -0.026644127 -0.010033879  1.000000000 0.005210529
+## YEAR      0.029336735  0.146004465  0.005210529 0.999999999</code></pre>
 <pre class="r"><code>corrs_low_df &lt;- as_tibble(corrs_ci_low) %&gt;%
   mutate(variable = c(&quot;Income&quot;, &quot;Rent&quot;, &quot;Units in building&quot;, &quot;Year&quot;)) %&gt;%
   rename(FTOTINC_low = FTOTINC,
@@ -334,29 +334,29 @@ corrs_pretty_int &lt;- left_join(corrs_low_df, corrs_upp_df) %&gt;%
 <tr class="odd">
 <td align="left">Income</td>
 <td align="left">1 to 1</td>
-<td align="left">-0.0247 to 0.00771</td>
-<td align="left">-0.0837 to -0.023</td>
-<td align="left">-0.0207 to 0.0307</td>
+<td align="left">-0.0241 to 0.0071</td>
+<td align="left">-0.08 to -0.0266</td>
+<td align="left">-0.0193 to 0.0293</td>
 </tr>
 <tr class="even">
 <td align="left">Rent</td>
-<td align="left">-0.0247 to 0.00771</td>
+<td align="left">-0.0241 to 0.0071</td>
 <td align="left">1 to 1</td>
-<td align="left">-0.0687 to -0.00847</td>
-<td align="left">0.0921 to 0.146</td>
+<td align="left">-0.0671 to -0.01</td>
+<td align="left">0.0924 to 0.146</td>
 </tr>
 <tr class="odd">
 <td align="left">Units in building</td>
-<td align="left">-0.0837 to NA</td>
-<td align="left">-0.0687 to NA</td>
+<td align="left">-0.08 to NA</td>
+<td align="left">-0.0671 to NA</td>
 <td align="left">1 to NA</td>
-<td align="left">-0.0492 to NA</td>
+<td align="left">-0.0475 to NA</td>
 </tr>
 <tr class="even">
 <td align="left">Year</td>
-<td align="left">-0.0207 to 0.0307</td>
-<td align="left">0.0921 to 0.146</td>
-<td align="left">-0.0492 to 0.00691</td>
+<td align="left">-0.0193 to 0.0293</td>
+<td align="left">0.0924 to 0.146</td>
+<td align="left">-0.0475 to 0.00521</td>
 <td align="left">1 to 1</td>
 </tr>
 </tbody>
@@ -542,6 +542,34 @@ summary(multiple_model)</code></pre>
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, a person of multiple races has an average rent $132.03 lower than an average person with one race. It is a statistically significant relationship.</p>
 <p>Overall, the regressions with the race dummy variables probably reflect characteristics about the incomes of people of various races as well, not just factors like discrimination that are associated with the race variables alone. Once we get into multivariate analysis next week, it will be interesting to see how the magnitude and significance of these race effects change in our models.</p>
+<pre class="r"><code>multivariate_model &lt;- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_data)
+summary(multivariate_model)</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + 
+##     Asian + Other + Multiple, design = svy_data)
+## 
+## Survey design:
+## Called via srvyr
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2.866e+04  7.595e+03  -3.773 0.000165 ***
+## YEAR         1.469e+01  3.775e+00   3.892 0.000102 ***
+## FTOTINC     -1.058e-05  1.321e-05  -0.801 0.422977    
+## UNITSSTR    -8.245e+00  6.986e+00  -1.180 0.237972    
+## Black       -1.611e+02  5.241e+01  -3.073 0.002138 ** 
+## Native      -2.830e+02  4.353e+01  -6.500 9.53e-11 ***
+## Asian        4.227e+01  3.704e+01   1.141 0.253899    
+## Other       -1.261e+02  6.715e+01  -1.878 0.060442 .  
+## Multiple    -1.626e+02  4.536e+01  -3.584 0.000344 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 241847.3)
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+<p>The above regression predicts that, all else equal, the rent will increase by an average of $14.69 per year. It is a highly statistically significant relationship. The income and units in structure variables continue to lack statistical significance. Relative to white people, blacks, Native Americans, and people of multiple races have statistically significantly lower rents. The rents of Asians and people of other races are not significantly different from those of whites, just as they weren’t for the bivariate regression analysis. The signs on all of the variables remained the same compared to the bivariate regression analyses. Notably, however, the magnitude of the coefficient on the year variable is slightly larger than it was before, implying that some of the other variables are “working against” the yearly increases in rent, perhaps because the county is growing more racially diverse or having a larger concentration of units in large structures over time.</p>
 
 
 
