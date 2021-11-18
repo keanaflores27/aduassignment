@@ -223,29 +223,32 @@ library(weights)</code></pre>
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     format.pval, units</code></pre>
-<pre class="r"><code>library(fastDummies)</code></pre>
+<pre class="r"><code>library(fastDummies)
+library(R.devices)</code></pre>
+<pre><code>## R.devices v2.17.0 (2021-01-19 18:30:06 UTC) successfully loaded. See ?R.devices for help.</code></pre>
 <pre class="r"><code>ddi &lt;- read_ipums_ddi(&quot;/Users/Amikula/Desktop/usa_00005.xml&quot;)
 data &lt;- read_ipums_micro(ddi) %&gt;%
   filter(RENT &gt; 0) %&gt;%
+  filter(FTOTINC &gt; 0) %&gt;%
     mutate(RACE = as_factor(RACE)) </code></pre>
 <pre><code>## Use of data from IPUMS USA is subject to conditions including that users should
 ## cite the data appropriately. Use command `ipums_conditions()` for more details.</code></pre>
 <pre class="r"><code>group_by(data, YEAR)</code></pre>
-<pre><code>## # A tibble: 5,331 x 17
+<pre><code>## # A tibble: 4,946 x 17
 ## # Groups:   YEAR [15]
 ##     YEAR        SAMPLE SERIAL CBSERIAL  HHWT   CLUSTER STATEICP COUNTYICP STRATA
 ##    &lt;int&gt;     &lt;int+lbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;int+lb&gt; &lt;int+lbl&gt;  &lt;dbl&gt;
 ##  1  2005 200501 [2005… 415455     8046    49   2.01e12 22 [Ind…   1050 [] 290018
 ##  2  2005 200501 [2005… 415676    16844   161   2.01e12 22 [Ind…   1050 [] 290018
 ##  3  2005 200501 [2005… 415842    23905   278   2.01e12 22 [Ind…   1050 [] 290018
-##  4  2005 200501 [2005… 415842    23905   278   2.01e12 22 [Ind…   1050 [] 290018
-##  5  2005 200501 [2005… 415842    23905   278   2.01e12 22 [Ind…   1050 [] 290018
-##  6  2005 200501 [2005… 415842    23905   278   2.01e12 22 [Ind…   1050 [] 290018
+##  4  2005 200501 [2005… 415989    30105   137   2.01e12 22 [Ind…   1050 [] 290018
+##  5  2005 200501 [2005… 415989    30105   137   2.01e12 22 [Ind…   1050 [] 290018
+##  6  2005 200501 [2005… 415989    30105   137   2.01e12 22 [Ind…   1050 [] 290018
 ##  7  2005 200501 [2005… 415989    30105   137   2.01e12 22 [Ind…   1050 [] 290018
-##  8  2005 200501 [2005… 415989    30105   137   2.01e12 22 [Ind…   1050 [] 290018
-##  9  2005 200501 [2005… 415989    30105   137   2.01e12 22 [Ind…   1050 [] 290018
-## 10  2005 200501 [2005… 415989    30105   137   2.01e12 22 [Ind…   1050 [] 290018
-## # … with 5,321 more rows, and 8 more variables: GQ &lt;int+lbl&gt;, RENT &lt;int+lbl&gt;,
+##  8  2005 200501 [2005… 416025    31917    80   2.01e12 22 [Ind…   1050 [] 290018
+##  9  2005 200501 [2005… 416102    35304    99   2.01e12 22 [Ind…   1050 [] 290018
+## 10  2005 200501 [2005… 416102    35304    99   2.01e12 22 [Ind…   1050 [] 290018
+## # … with 4,936 more rows, and 8 more variables: GQ &lt;int+lbl&gt;, RENT &lt;int+lbl&gt;,
 ## #   UNITSSTR &lt;int+lbl&gt;, PERNUM &lt;dbl&gt;, PERWT &lt;dbl&gt;, RACE &lt;fct&gt;, RACED &lt;int+lbl&gt;,
 ## #   FTOTINC &lt;dbl+lbl&gt;</code></pre>
 <pre class="r"><code>group_data &lt;- group_by(data, YEAR)</code></pre>
@@ -262,36 +265,36 @@ data$Multiple &lt;- ifelse(data$RACE %in% c(&#39;Two major races&#39;, &#39;Thre
 <pre class="r"><code>corrs &lt;- svycor(~FTOTINC + RENT + UNITSSTR + YEAR, design = svy_data, sig.stats = TRUE) </code></pre>
 <pre class="r"><code>corrs$cors</code></pre>
 <pre><code>##               FTOTINC         RENT    UNITSSTR         YEAR
-## FTOTINC   1.000000000 -0.008511663 -0.05334311  0.005025075
-## RENT     -0.008511663  1.000000000 -0.03859071  0.119218920
-## UNITSSTR -0.053343111 -0.038590712  1.00000000 -0.021161388
-## YEAR      0.005025075  0.119218920 -0.02116139  0.999999999</code></pre>
+## FTOTINC   1.000000000 -0.004309981 -0.05157974  0.003636097
+## RENT     -0.004309981  1.000000000 -0.03237359  0.124472483
+## UNITSSTR -0.051579743 -0.032373594  1.00000000 -0.021106383
+## YEAR      0.003636097  0.124472483 -0.02110638  0.999999998</code></pre>
 <pre class="r"><code>corrs$p.values</code></pre>
 <pre><code>##          FTOTINC  RENT UNITSSTR  YEAR
-## FTOTINC    0.000 0.172    0.000 0.552
-## RENT       0.172 0.000    0.006 0.000
-## UNITSSTR   0.000 0.006    0.000 0.124
-## YEAR       0.552 0.000    0.124 0.000</code></pre>
+## FTOTINC    0.000 0.522    0.000 0.694
+## RENT       0.522 0.000    0.056 0.000
+## UNITSSTR   0.000 0.056    0.000 0.128
+## YEAR       0.694 0.000    0.128 0.000</code></pre>
 <pre class="r"><code>corrs$std.err</code></pre>
-<pre><code>##              FTOTINC        RENT   UNITSSTR       YEAR
-## FTOTINC  0.000000000 0.007964024 0.01362193 0.01240391
-## RENT     0.007964024 0.000000000 0.01456981 0.01366609
-## UNITSSTR 0.013621931 0.014569812 0.00000000 0.01345506
-## YEAR     0.012403908 0.013666094 0.01345506 0.00000000</code></pre>
+<pre><code>##             FTOTINC       RENT   UNITSSTR       YEAR
+## FTOTINC  0.00000000 0.00977805 0.01323827 0.01190721
+## RENT     0.00977805 0.00000000 0.01622868 0.01425394
+## UNITSSTR 0.01323827 0.01622868 0.00000000 0.01386589
+## YEAR     0.01190721 0.01425394 0.01386589 0.00000000</code></pre>
 <pre class="r"><code>corrs_ci_low &lt;- corrs$cors - 1.96*corrs$std.err
 corrs_ci_upp &lt;- corrs$cors + 1.96*corrs$std.err</code></pre>
 <pre class="r"><code>corrs_ci_low</code></pre>
 <pre><code>##              FTOTINC        RENT    UNITSSTR        YEAR
-## FTOTINC   1.00000000 -0.02412115 -0.08004210 -0.01928658
-## RENT     -0.02412115  1.00000000 -0.06714754  0.09243338
-## UNITSSTR -0.08004210 -0.06714754  1.00000000 -0.04753330
-## YEAR     -0.01928658  0.09243338 -0.04753330  1.00000000</code></pre>
+## FTOTINC   1.00000000 -0.02347496 -0.07752675 -0.01970203
+## RENT     -0.02347496  1.00000000 -0.06418181  0.09653476
+## UNITSSTR -0.07752675 -0.06418181  1.00000000 -0.04828352
+## YEAR     -0.01970203  0.09653476 -0.04828352  1.00000000</code></pre>
 <pre class="r"><code>corrs_ci_upp</code></pre>
-<pre><code>##               FTOTINC         RENT     UNITSSTR        YEAR
-## FTOTINC   1.000000000  0.007097825 -0.026644127 0.029336735
-## RENT      0.007097825  1.000000000 -0.010033879 0.146004465
-## UNITSSTR -0.026644127 -0.010033879  1.000000000 0.005210529
-## YEAR      0.029336735  0.146004465  0.005210529 0.999999999</code></pre>
+<pre><code>##              FTOTINC          RENT      UNITSSTR        YEAR
+## FTOTINC   1.00000000  0.0148549967 -0.0256327369 0.026974229
+## RENT      0.01485500  1.0000000000 -0.0005653775 0.152410208
+## UNITSSTR -0.02563274 -0.0005653775  1.0000000000 0.006070755
+## YEAR      0.02697423  0.1524102077  0.0060707547 0.999999998</code></pre>
 <pre class="r"><code>corrs_low_df &lt;- as_tibble(corrs_ci_low) %&gt;%
   mutate(variable = c(&quot;Income&quot;, &quot;Rent&quot;, &quot;Units in building&quot;, &quot;Year&quot;)) %&gt;%
   rename(FTOTINC_low = FTOTINC,
@@ -334,29 +337,29 @@ corrs_pretty_int &lt;- left_join(corrs_low_df, corrs_upp_df) %&gt;%
 <tr class="odd">
 <td align="left">Income</td>
 <td align="left">1 to 1</td>
-<td align="left">-0.0241 to 0.0071</td>
-<td align="left">-0.08 to -0.0266</td>
-<td align="left">-0.0193 to 0.0293</td>
+<td align="left">-0.0235 to 0.0149</td>
+<td align="left">-0.0775 to -0.0256</td>
+<td align="left">-0.0197 to 0.027</td>
 </tr>
 <tr class="even">
 <td align="left">Rent</td>
-<td align="left">-0.0241 to 0.0071</td>
+<td align="left">-0.0235 to 0.0149</td>
 <td align="left">1 to 1</td>
-<td align="left">-0.0671 to -0.01</td>
-<td align="left">0.0924 to 0.146</td>
+<td align="left">-0.0642 to -0.000565</td>
+<td align="left">0.0965 to 0.152</td>
 </tr>
 <tr class="odd">
 <td align="left">Units in building</td>
-<td align="left">-0.08 to NA</td>
-<td align="left">-0.0671 to NA</td>
+<td align="left">-0.0775 to NA</td>
+<td align="left">-0.0642 to NA</td>
 <td align="left">1 to NA</td>
-<td align="left">-0.0475 to NA</td>
+<td align="left">-0.0483 to NA</td>
 </tr>
 <tr class="even">
 <td align="left">Year</td>
-<td align="left">-0.0193 to 0.0293</td>
-<td align="left">0.0924 to 0.146</td>
-<td align="left">-0.0475 to 0.00521</td>
+<td align="left">-0.0197 to 0.027</td>
+<td align="left">0.0965 to 0.152</td>
+<td align="left">-0.0483 to 0.00607</td>
 <td align="left">1 to 1</td>
 </tr>
 </tbody>
@@ -372,12 +375,12 @@ summary(rent_model)</code></pre>
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -27505.917   7580.894  -3.628 0.000291 ***
-## YEAR            14.091      3.768   3.740 0.000188 ***
+## (Intercept) -27918.017   7293.181  -3.828 0.000132 ***
+## YEAR            14.285      3.625   3.941 8.33e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 244781.5)
+## (Dispersion parameter for gaussian family taken to be 228199.7)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that the rent in Monroe County will rise by an average of $14.09 per year. It is statistically significant and strong in magnitude, although the line of best fit implies that, for much of the 19th century and earlier, the average monthly rent was a negative number, which is not an intuitive result.</p>
@@ -392,12 +395,12 @@ summary(inc_model)</code></pre>
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  8.495e+02  1.597e+01  53.191   &lt;2e-16 ***
-## FTOTINC     -1.433e-05  9.262e-06  -1.547    0.122    
+## (Intercept)  8.301e+02  1.478e+01  56.164   &lt;2e-16 ***
+## FTOTINC     -6.720e-06  1.132e-05  -0.594    0.553    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 248292.8)
+## (Dispersion parameter for gaussian family taken to be 231786.6)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression implies that, for every dollar increase in family income, the rent the family pays decreases by a small amount. It is not a statistically significant relationship. Perhaps we could achieve a more usable result by expressing income in terms of thousands of dollars.</p>
@@ -412,12 +415,12 @@ summary(hu_model)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  893.756     47.692  18.740   &lt;2e-16 ***
-## UNITSSTR      -7.661      6.824  -1.123    0.262    
+## (Intercept)  865.658     43.571   19.87   &lt;2e-16 ***
+## UNITSSTR      -6.215      6.278   -0.99    0.322    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 247941)
+## (Dispersion parameter for gaussian family taken to be 231548)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, for every 1-unit increase in the number of housing units in the structure, rents decline by about $7.66. While this is a significant magnitude, the relationship is not statistically significant. Notice that the intercept implies that structures with 1 unit have an average rent of (893.76 - 7.66 = ) 886.10 dollars per month.</p>
@@ -432,12 +435,12 @@ summary(white_model)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   796.75      24.60  32.388   &lt;2e-16 ***
-## White          64.05      27.93   2.294   0.0219 *  
+## (Intercept)   773.80      24.06  32.155  &lt; 2e-16 ***
+## White          67.35      25.78   2.613  0.00903 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 247692.7)
+## (Dispersion parameter for gaussian family taken to be 231157.5)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, a white person has an average rent $64.05 higher than an average non-white person. It is a statistically significant relationship.</p>
@@ -452,12 +455,12 @@ summary(black_model)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   856.51      16.22  52.819  &lt; 2e-16 ***
-## Black        -148.72      53.16  -2.798  0.00519 ** 
+## (Intercept)   835.51      14.95  55.876   &lt;2e-16 ***
+## Black        -108.01      52.49  -2.058   0.0397 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 247244.4)
+## (Dispersion parameter for gaussian family taken to be 231211.1)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, a black person has an average rent $148.72 lower than an average non-black person. It is a statistically significant relationship.</p>
@@ -472,12 +475,12 @@ summary(native_model)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   849.91      15.90  53.438  &lt; 2e-16 ***
-## Native       -273.82      46.19  -5.928 3.45e-09 ***
+## (Intercept)   830.81      14.74  56.363  &lt; 2e-16 ***
+## Native       -254.72      45.79  -5.562 2.94e-08 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 248052.4)
+## (Dispersion parameter for gaussian family taken to be 231547.3)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, a Native American person has an average rent $273.82 lower than an average non-native person. It is a highly statistically significant relationship.</p>
@@ -492,12 +495,12 @@ summary(asian_model)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   845.00      16.77  50.401   &lt;2e-16 ***
-## Asian          43.97      36.73   1.197    0.231    
+## (Intercept)   828.08      15.23  54.374   &lt;2e-16 ***
+## Asian          25.39      34.40   0.738     0.46    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 248152.2)
+## (Dispersion parameter for gaussian family taken to be 231749.2)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, an Asian person has an average rent $43.97 higher than an average non-Asian person. It is not a statistically significant relationship, likely because of a small sample size of Asians in Monroe County.</p>
@@ -512,12 +515,12 @@ summary(other_model)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   850.01      15.95  53.278   &lt;2e-16 ***
-## Other        -125.67      68.17  -1.843   0.0654 .  
+## (Intercept)   830.78      14.76  56.278   &lt;2e-16 ***
+## Other        -128.99      72.83  -1.771   0.0767 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 248179.7)
+## (Dispersion parameter for gaussian family taken to be 231671.2)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, a person of races not otherwise included in the above analysis has an average rent $125.67 lower than an average “non-other” person. It is not a statistically significant relationship at the .05 level, likely because of a small sample size of people of “other races” in Monroe County. Given the relatively low p-value, however, we’re somewhat confident that the relationship would be significant with a larger sample size.</p>
@@ -532,12 +535,12 @@ summary(multiple_model)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   853.20      16.11  52.954  &lt; 2e-16 ***
-## Multiple     -132.03      44.22  -2.986  0.00286 ** 
+## (Intercept)   833.78      14.89  55.988  &lt; 2e-16 ***
+## Multiple     -113.34      43.91  -2.581  0.00991 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 247769.5)
+## (Dispersion parameter for gaussian family taken to be 231360.7)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, a person of multiple races has an average rent $132.03 lower than an average person with one race. It is a statistically significant relationship.</p>
@@ -554,22 +557,124 @@ summary(multivariate_model)</code></pre>
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -2.866e+04  7.595e+03  -3.773 0.000165 ***
-## YEAR         1.469e+01  3.775e+00   3.892 0.000102 ***
-## FTOTINC     -1.058e-05  1.321e-05  -0.801 0.422977    
-## UNITSSTR    -8.245e+00  6.986e+00  -1.180 0.237972    
-## Black       -1.611e+02  5.241e+01  -3.073 0.002138 ** 
-## Native      -2.830e+02  4.353e+01  -6.500 9.53e-11 ***
-## Asian        4.227e+01  3.704e+01   1.141 0.253899    
-## Other       -1.261e+02  6.715e+01  -1.878 0.060442 .  
-## Multiple    -1.626e+02  4.536e+01  -3.584 0.000344 ***
+## (Intercept) -2.880e+04  7.327e+03  -3.931 8.67e-05 ***
+## YEAR         1.475e+01  3.642e+00   4.050 5.27e-05 ***
+## FTOTINC     -3.450e-06  1.397e-05  -0.247  0.80496    
+## UNITSSTR    -6.101e+00  6.411e+00  -0.952  0.34136    
+## Black       -1.214e+02  5.131e+01  -2.366  0.01803 *  
+## Native      -2.609e+02  4.212e+01  -6.194 6.80e-10 ***
+## Asian        2.122e+01  3.447e+01   0.616  0.53821    
+## Other       -1.230e+02  6.998e+01  -1.757  0.07904 .  
+## Multiple    -1.436e+02  4.495e+01  -3.194  0.00142 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 241847.3)
+## (Dispersion parameter for gaussian family taken to be 226247)
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The above regression predicts that, all else equal, the rent will increase by an average of $14.69 per year. It is a highly statistically significant relationship. The income and units in structure variables continue to lack statistical significance. Relative to white people, blacks, Native Americans, and people of multiple races have statistically significantly lower rents. The rents of Asians and people of other races are not significantly different from those of whites, just as they weren’t for the bivariate regression analysis. The signs on all of the variables remained the same compared to the bivariate regression analyses. Notably, however, the magnitude of the coefficient on the year variable is slightly larger than it was before, implying that some of the other variables are “working against” the yearly increases in rent, perhaps because the county is growing more racially diverse or having a larger concentration of units in large structures over time.</p>
+<pre class="r"><code>centered_data &lt;- data %&gt;%
+  mutate(YEAR = YEAR - mean(YEAR, na.rm=TRUE),
+         FTOTINC = FTOTINC - mean(FTOTINC, na.rm=TRUE),
+         UNITSSTR = UNITSSTR - mean(FTOTINC, na.rm=TRUE))</code></pre>
+<pre class="r"><code>svy_centered &lt;- centered_data %&gt;%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = PERWT)</code></pre>
+<pre class="r"><code>centered_model &lt;- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_centered)
+summary(centered_model)</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + 
+##     Asian + Other + Multiple, design = svy_centered)
+## 
+## Survey design:
+## Called via srvyr
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  8.991e+02  4.781e+01  18.805  &lt; 2e-16 ***
+## YEAR         1.494e+01  4.006e+00   3.729 0.000197 ***
+## FTOTINC     -1.037e-05  1.267e-05  -0.819 0.413135    
+## UNITSSTR    -5.431e+00  7.135e+00  -0.761 0.446578    
+## Black       -1.376e+02  4.994e+01  -2.755 0.005911 ** 
+## Native      -2.877e+02  4.478e+01  -6.425 1.57e-10 ***
+## Asian        2.584e+01  4.482e+01   0.576 0.564331    
+## Other       -9.710e+01  8.638e+01  -1.124 0.261069    
+## Multiple    -1.466e+02  4.165e+01  -3.519 0.000441 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 245886.9)
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+<p>In the above model, we centered the data so that the mean value of each variable corresponds to a coefficient of zero and the intercept is more easily understandable as the expected value of rent given average values for all the other variables. As expected, this centered data model does not change the significance of any of our variables vis a vis the original multivariate model. It merely provides a more intuitive understanding of the relationship between the variables, allowing us to more easily calculate individual rent figures for a “typical” data point. The intercept tells us that, given average values for the other data points, the expected rent is about $899.10 per month. However, we’re a little confused about how to interpret the dummy variables in the model given that they only have a value of either 0 or 1 - would the coefficients in this model reflect the share of the population of each racial category? If so, we’re not sure how useful mean centering is for our data set.</p>
+<pre class="r"><code>data_scaled &lt;- data %&gt;%
+  mutate(FTOTINC = FTOTINC/1000)</code></pre>
+<pre class="r"><code>svy_scaled &lt;- data_scaled %&gt;%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = PERWT)</code></pre>
+<pre class="r"><code>scaled_model &lt;- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_scaled)
+summary(scaled_model)</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + 
+##     Asian + Other + Multiple, design = svy_scaled)
+## 
+## Survey design:
+## Called via srvyr
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2.916e+04  8.059e+03  -3.618 0.000303 ***
+## YEAR         1.494e+01  4.006e+00   3.729 0.000197 ***
+## FTOTINC     -1.037e-02  1.267e-02  -0.819 0.413135    
+## UNITSSTR    -5.431e+00  7.135e+00  -0.761 0.446578    
+## Black       -1.376e+02  4.994e+01  -2.755 0.005911 ** 
+## Native      -2.877e+02  4.478e+01  -6.425 1.57e-10 ***
+## Asian        2.584e+01  4.482e+01   0.576 0.564331    
+## Other       -9.710e+01  8.638e+01  -1.124 0.261069    
+## Multiple    -1.466e+02  4.165e+01  -3.519 0.000441 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 245886.9)
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
+<pre class="r"><code>data_log &lt;- data %&gt;%
+  mutate(logFTOTINC = log(FTOTINC, base = 2))</code></pre>
+<pre class="r"><code>svy_log &lt;- data_log %&gt;%
+  as_survey_design(ids = CLUSTER,
+                   strata = STRATA,
+                   weights = PERWT)</code></pre>
+<pre class="r"><code>log_model &lt;- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_log)
+summary(log_model)</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + 
+##     Asian + Other + Multiple, design = svy_log)
+## 
+## Survey design:
+## Called via srvyr
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2.916e+04  8.059e+03  -3.618 0.000303 ***
+## YEAR         1.494e+01  4.006e+00   3.729 0.000197 ***
+## FTOTINC     -1.037e-05  1.267e-05  -0.819 0.413135    
+## UNITSSTR    -5.431e+00  7.135e+00  -0.761 0.446578    
+## Black       -1.376e+02  4.994e+01  -2.755 0.005911 ** 
+## Native      -2.877e+02  4.478e+01  -6.425 1.57e-10 ***
+## Asian        2.584e+01  4.482e+01   0.576 0.564331    
+## Other       -9.710e+01  8.638e+01  -1.124 0.261069    
+## Multiple    -1.466e+02  4.165e+01  -3.519 0.000441 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 245886.9)
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
 
 
 
