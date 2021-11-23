@@ -226,6 +226,18 @@ library(weights)</code></pre>
 <pre class="r"><code>library(fastDummies)
 library(R.devices)</code></pre>
 <pre><code>## R.devices v2.17.0 (2021-01-19 18:30:06 UTC) successfully loaded. See ?R.devices for help.</code></pre>
+<pre class="r"><code>library(huxtable)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;huxtable&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:Hmisc&#39;:
+## 
+##     contents, label, label&lt;-</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     add_rownames</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     theme_grey</code></pre>
 <pre class="r"><code>ddi &lt;- read_ipums_ddi(&quot;/Users/Amikula/Desktop/usa_00005.xml&quot;)
 data &lt;- read_ipums_micro(ddi) %&gt;%
   filter(RENT &gt; 0) %&gt;%
@@ -271,30 +283,30 @@ data$Multiple &lt;- ifelse(data$RACE %in% c(&#39;Two major races&#39;, &#39;Thre
 ## YEAR      0.003636097  0.124472483 -0.02110638  0.999999998</code></pre>
 <pre class="r"><code>corrs$p.values</code></pre>
 <pre><code>##          FTOTINC  RENT UNITSSTR  YEAR
-## FTOTINC    0.000 0.522    0.000 0.694
-## RENT       0.522 0.000    0.056 0.000
-## UNITSSTR   0.000 0.056    0.000 0.128
-## YEAR       0.694 0.000    0.128 0.000</code></pre>
+## FTOTINC    0.000 0.538    0.000 0.700
+## RENT       0.538 0.000    0.032 0.000
+## UNITSSTR   0.000 0.032    0.000 0.138
+## YEAR       0.700 0.000    0.138 0.000</code></pre>
 <pre class="r"><code>corrs$std.err</code></pre>
 <pre><code>##             FTOTINC       RENT   UNITSSTR       YEAR
-## FTOTINC  0.00000000 0.00977805 0.01323827 0.01190721
-## RENT     0.00977805 0.00000000 0.01622868 0.01425394
-## UNITSSTR 0.01323827 0.01622868 0.00000000 0.01386589
-## YEAR     0.01190721 0.01425394 0.01386589 0.00000000</code></pre>
+## FTOTINC  0.00000000 0.01066630 0.01332067 0.01224125
+## RENT     0.01066630 0.00000000 0.01573422 0.01383129
+## UNITSSTR 0.01332067 0.01573422 0.00000000 0.01402501
+## YEAR     0.01224125 0.01383129 0.01402501 0.00000000</code></pre>
 <pre class="r"><code>corrs_ci_low &lt;- corrs$cors - 1.96*corrs$std.err
 corrs_ci_upp &lt;- corrs$cors + 1.96*corrs$std.err</code></pre>
 <pre class="r"><code>corrs_ci_low</code></pre>
 <pre><code>##              FTOTINC        RENT    UNITSSTR        YEAR
-## FTOTINC   1.00000000 -0.02347496 -0.07752675 -0.01970203
-## RENT     -0.02347496  1.00000000 -0.06418181  0.09653476
-## UNITSSTR -0.07752675 -0.06418181  1.00000000 -0.04828352
-## YEAR     -0.01970203  0.09653476 -0.04828352  1.00000000</code></pre>
+## FTOTINC   1.00000000 -0.02521593 -0.07768827 -0.02035675
+## RENT     -0.02521593  1.00000000 -0.06321267  0.09736315
+## UNITSSTR -0.07768827 -0.06321267  1.00000000 -0.04859541
+## YEAR     -0.02035675  0.09736315 -0.04859541  1.00000000</code></pre>
 <pre class="r"><code>corrs_ci_upp</code></pre>
-<pre><code>##              FTOTINC          RENT      UNITSSTR        YEAR
-## FTOTINC   1.00000000  0.0148549967 -0.0256327369 0.026974229
-## RENT      0.01485500  1.0000000000 -0.0005653775 0.152410208
-## UNITSSTR -0.02563274 -0.0005653775  1.0000000000 0.006070755
-## YEAR      0.02697423  0.1524102077  0.0060707547 0.999999998</code></pre>
+<pre><code>##              FTOTINC         RENT     UNITSSTR        YEAR
+## FTOTINC   1.00000000  0.016595970 -0.025471221 0.027628946
+## RENT      0.01659597  1.000000000 -0.001534515 0.151581814
+## UNITSSTR -0.02547122 -0.001534515  1.000000000 0.006382646
+## YEAR      0.02762895  0.151581814  0.006382646 0.999999998</code></pre>
 <pre class="r"><code>corrs_low_df &lt;- as_tibble(corrs_ci_low) %&gt;%
   mutate(variable = c(&quot;Income&quot;, &quot;Rent&quot;, &quot;Units in building&quot;, &quot;Year&quot;)) %&gt;%
   rename(FTOTINC_low = FTOTINC,
@@ -337,29 +349,29 @@ corrs_pretty_int &lt;- left_join(corrs_low_df, corrs_upp_df) %&gt;%
 <tr class="odd">
 <td align="left">Income</td>
 <td align="left">1 to 1</td>
-<td align="left">-0.0235 to 0.0149</td>
-<td align="left">-0.0775 to -0.0256</td>
-<td align="left">-0.0197 to 0.027</td>
+<td align="left">-0.0252 to 0.0166</td>
+<td align="left">-0.0777 to -0.0255</td>
+<td align="left">-0.0204 to 0.0276</td>
 </tr>
 <tr class="even">
 <td align="left">Rent</td>
-<td align="left">-0.0235 to 0.0149</td>
+<td align="left">-0.0252 to 0.0166</td>
 <td align="left">1 to 1</td>
-<td align="left">-0.0642 to -0.000565</td>
-<td align="left">0.0965 to 0.152</td>
+<td align="left">-0.0632 to -0.00153</td>
+<td align="left">0.0974 to 0.152</td>
 </tr>
 <tr class="odd">
 <td align="left">Units in building</td>
-<td align="left">-0.0775 to NA</td>
-<td align="left">-0.0642 to NA</td>
+<td align="left">-0.0777 to NA</td>
+<td align="left">-0.0632 to NA</td>
 <td align="left">1 to NA</td>
-<td align="left">-0.0483 to NA</td>
+<td align="left">-0.0486 to NA</td>
 </tr>
 <tr class="even">
 <td align="left">Year</td>
-<td align="left">-0.0197 to 0.027</td>
-<td align="left">0.0965 to 0.152</td>
-<td align="left">-0.0483 to 0.00607</td>
+<td align="left">-0.0204 to 0.0276</td>
+<td align="left">0.0974 to 0.152</td>
+<td align="left">-0.0486 to 0.00638</td>
 <td align="left">1 to 1</td>
 </tr>
 </tbody>
@@ -582,99 +594,125 @@ summary(multivariate_model)</code></pre>
                    strata = STRATA,
                    weights = PERWT)</code></pre>
 <pre class="r"><code>centered_model &lt;- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_centered)
-summary(centered_model)</code></pre>
-<pre><code>## 
-## Call:
-## svyglm(formula = RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + 
-##     Asian + Other + Multiple, design = svy_centered)
-## 
-## Survey design:
-## Called via srvyr
-## 
-## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  8.991e+02  4.781e+01  18.805  &lt; 2e-16 ***
-## YEAR         1.494e+01  4.006e+00   3.729 0.000197 ***
-## FTOTINC     -1.037e-05  1.267e-05  -0.819 0.413135    
-## UNITSSTR    -5.431e+00  7.135e+00  -0.761 0.446578    
-## Black       -1.376e+02  4.994e+01  -2.755 0.005911 ** 
-## Native      -2.877e+02  4.478e+01  -6.425 1.57e-10 ***
-## Asian        2.584e+01  4.482e+01   0.576 0.564331    
-## Other       -9.710e+01  8.638e+01  -1.124 0.261069    
-## Multiple    -1.466e+02  4.165e+01  -3.519 0.000441 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for gaussian family taken to be 245886.9)
-## 
-## Number of Fisher Scoring iterations: 2</code></pre>
-<p>In the above model, we centered the data so that the mean value of each variable corresponds to a coefficient of zero and the intercept is more easily understandable as the expected value of rent given average values for all the other variables. As expected, this centered data model does not change the significance of any of our variables vis a vis the original multivariate model. It merely provides a more intuitive understanding of the relationship between the variables, allowing us to more easily calculate individual rent figures for a “typical” data point. The intercept tells us that, given average values for the other data points, the expected rent is about $899.10 per month. However, we’re a little confused about how to interpret the dummy variables in the model given that they only have a value of either 0 or 1 - would the coefficients in this model reflect the share of the population of each racial category? If so, we’re not sure how useful mean centering is for our data set.</p>
+
+export_summs(centered_model, 
+             error_format = &quot;(p = {p.value})&quot;,
+             error_pos = &quot;same&quot;,
+             model.names = c(&quot;Centered&quot;))</code></pre>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:unnamed-chunk-26">
+<col><col><tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Centered</th></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(Intercept)</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">899.05 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">YEAR</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14.94 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">FTOTINC</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-0.00 (p = 0.41)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">UNITSSTR</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-5.43 (p = 0.45)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Black</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-137.58 ** (p = 0.01)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Native</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-287.66 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Asian</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">25.84 (p = 0.56)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Other</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-97.10 (p = 0.26)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Multiple</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-146.56 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">N</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">4946&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">R2</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.02&nbsp;</td></tr>
+<tr>
+<th colspan="2" style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"> *** p &lt; 0.001;  ** p &lt; 0.01;  * p &lt; 0.05.</th></tr>
+</table>
+
+<p>In the above model, we centered the data so that the mean value of each variable corresponds to a coefficient of zero and the intercept is more easily understandable as the expected value of rent given average values for all the other variables. As expected, this centered data model does not change the significance of any of our variables vis a vis the original multivariate model. It merely provides a more intuitive understanding of the relationship between the variables, allowing us to more easily calculate individual rent figures for a “typical” data point. The intercept tells us that, given average values for the other data points, the expected rent is about $899.05 per month. However, we’re uncertain about how to interpret the dummy variables in the model given that they only have a value of either 0 or 1. Would the coefficients in this model reflect the share of the population of each racial category? If so, we’re not sure how useful mean centering is for our data set.</p>
 <pre class="r"><code>data_scaled &lt;- data %&gt;%
-  mutate(FTOTINC = FTOTINC/1000)</code></pre>
+  mutate(FTOTINC2 = FTOTINC/1000)</code></pre>
 <pre class="r"><code>svy_scaled &lt;- data_scaled %&gt;%
   as_survey_design(ids = CLUSTER,
                    strata = STRATA,
                    weights = PERWT)</code></pre>
-<pre class="r"><code>scaled_model &lt;- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_scaled)
-summary(scaled_model)</code></pre>
-<pre><code>## 
-## Call:
-## svyglm(formula = RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + 
-##     Asian + Other + Multiple, design = svy_scaled)
-## 
-## Survey design:
-## Called via srvyr
-## 
-## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -2.916e+04  8.059e+03  -3.618 0.000303 ***
-## YEAR         1.494e+01  4.006e+00   3.729 0.000197 ***
-## FTOTINC     -1.037e-02  1.267e-02  -0.819 0.413135    
-## UNITSSTR    -5.431e+00  7.135e+00  -0.761 0.446578    
-## Black       -1.376e+02  4.994e+01  -2.755 0.005911 ** 
-## Native      -2.877e+02  4.478e+01  -6.425 1.57e-10 ***
-## Asian        2.584e+01  4.482e+01   0.576 0.564331    
-## Other       -9.710e+01  8.638e+01  -1.124 0.261069    
-## Multiple    -1.466e+02  4.165e+01  -3.519 0.000441 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for gaussian family taken to be 245886.9)
-## 
-## Number of Fisher Scoring iterations: 2</code></pre>
+<pre class="r"><code>scaled_model &lt;- svyglm(RENT ~ YEAR + FTOTINC2 + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_scaled)
+
+export_summs(scaled_model, 
+             error_format = &quot;(p = {p.value})&quot;,
+             error_pos = &quot;same&quot;,
+             model.names = c(&quot;Scaled&quot;))</code></pre>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:unnamed-chunk-29">
+<col><col><tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Scaled</th></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(Intercept)</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-29155.44 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">YEAR</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">14.94 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">FTOTINC2</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-0.01 (p = 0.41)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">UNITSSTR</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-5.43 (p = 0.45)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Black</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-137.58 ** (p = 0.01)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Native</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-287.66 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Asian</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">25.84 (p = 0.56)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Other</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-97.10 (p = 0.26)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Multiple</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-146.56 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">N</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">4946&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">R2</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.02&nbsp;</td></tr>
+<tr>
+<th colspan="2" style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"> *** p &lt; 0.001;  ** p &lt; 0.01;  * p &lt; 0.05.</th></tr>
+</table>
+
+<p>In the above model, we scaled the income data so that the unit of change is one thousand dollars, not a single dollar. This makes our coefficient larger by a factor of 1,000, improving our ability to interpret the data in terms of a “practical” amount of money. However, the effect is still really small. Our model predicts that a 1,000-dollar increase in income reduces the household’s rent by 1 cent. The scaling does not change the statistical significance. We’re not sure this model is entirely helpful either - the income effect on rent is still small. Perhaps a non-linear transformation would fit the model better, as we explore below.</p>
 <pre class="r"><code>data_log &lt;- data %&gt;%
   mutate(logFTOTINC = log(FTOTINC, base = 2))</code></pre>
 <pre class="r"><code>svy_log &lt;- data_log %&gt;%
   as_survey_design(ids = CLUSTER,
                    strata = STRATA,
                    weights = PERWT)</code></pre>
-<pre class="r"><code>log_model &lt;- svyglm(RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_log)
-summary(log_model)</code></pre>
-<pre><code>## 
-## Call:
-## svyglm(formula = RENT ~ YEAR + FTOTINC + UNITSSTR + Black + Native + 
-##     Asian + Other + Multiple, design = svy_log)
-## 
-## Survey design:
-## Called via srvyr
-## 
-## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -2.916e+04  8.059e+03  -3.618 0.000303 ***
-## YEAR         1.494e+01  4.006e+00   3.729 0.000197 ***
-## FTOTINC     -1.037e-05  1.267e-05  -0.819 0.413135    
-## UNITSSTR    -5.431e+00  7.135e+00  -0.761 0.446578    
-## Black       -1.376e+02  4.994e+01  -2.755 0.005911 ** 
-## Native      -2.877e+02  4.478e+01  -6.425 1.57e-10 ***
-## Asian        2.584e+01  4.482e+01   0.576 0.564331    
-## Other       -9.710e+01  8.638e+01  -1.124 0.261069    
-## Multiple    -1.466e+02  4.165e+01  -3.519 0.000441 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for gaussian family taken to be 245886.9)
-## 
-## Number of Fisher Scoring iterations: 2</code></pre>
+<pre class="r"><code>log_model &lt;- svyglm(RENT ~ YEAR + logFTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple, design = svy_log)
+
+export_summs(log_model, 
+             error_format = &quot;(p = {p.value})&quot;,
+             error_pos = &quot;same&quot;,
+             model.names = c(&quot;Logged&quot;))</code></pre>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:unnamed-chunk-32">
+<col><col><tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Logged</th></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(Intercept)</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-30623.42 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">YEAR</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">15.94 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">logFTOTINC</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-37.88 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">UNITSSTR</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-10.22 (p = 0.16)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Black</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-123.90 * (p = 0.01)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Native</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-296.14 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Asian</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">25.84 (p = 0.54)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Other</th><td style="vertical-align: top; text-align: right; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-113.08 (p = 0.16)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">Multiple</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-151.65 *** (p = 0.00)</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; padding: 6pt 6pt 6pt 6pt; font-weight: normal;">N</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">4946&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">R2</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.04&nbsp;</td></tr>
+<tr>
+<th colspan="2" style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"> *** p &lt; 0.001;  ** p &lt; 0.01;  * p &lt; 0.05.</th></tr>
+</table>
+
+<p>In the above model, we transformed the income data using a log function with base 2, meaning that the unit of change is squaring income. This makes our coefficient very large and easily interpretable - squaring income is associated with a highly statistically significant $37.88 decrease in rent. This is surprising as for most goods, increasing income tends to increase spending, however, this is not the case for rental housing in Monroe County. Also, the Black variable is less statistically significant in this model than before, perhaps implying that there is some interaction going on between the Black and income variables. While the statistically significant result on the income variable is exciting, even more exciting is that this transformation apparently improves the fit of the model, the true indicator of a more appropriate model to use to understand the relationship between these variables.</p>
 
 
 

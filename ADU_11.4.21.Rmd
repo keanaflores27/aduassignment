@@ -251,3 +251,14 @@ export_summs(log_model,
 ```
 
 In the above model, we transformed the income data using a log function with base 2, meaning that the unit of change is squaring income. This makes our coefficient very large and easily interpretable - squaring income is associated with a highly statistically significant $37.88 decrease in rent. This is surprising as for most goods, increasing income tends to increase spending, however, this is not the case for rental housing in Monroe County. Also, the Black variable is less statistically significant in this model than before, perhaps implying that there is some interaction going on between the Black and income variables. While the statistically significant result on the income variable is exciting, even more exciting is that this transformation apparently improves the fit of the model, the true indicator of a more appropriate model to use to understand the relationship between these variables. 
+
+```{r}
+interaction_model <- svyglm(RENT ~ YEAR + logFTOTINC + UNITSSTR + Black + Native + Asian + Other + Multiple + logFTOTINC*Black + logFTOTINC*Native + logFTOTINC*Asian + logFTOTINC*Other + logFTOTINC*Multiple, design = svy_log)
+
+export_summs(interaction_model, 
+             error_format = "(p = {p.value})",
+             error_pos = "same",
+             model.names = c("Interacted"))
+```
+
+In the above model, we interact each race dummy variable with the logged income variable. This allows us to see whether the relationship between income and median monthly rent is different for different races of people. We find that, relative to whites, both blacks and people of multiple races have a significantly lesser discount on their rent as their incomes increase, and for blacks the magnitude is positive overall. The results are not statistically significanat for Natives, Asians, and people of other races relative to whites. Also, the logFTOTINC variable by itself is still strongly statistically significant and negative in magnitude, demonstrating that, if you're white, your rent decreases on average as your income increases. We select this regression as our new preferred model, as the fit has improved compared to the regressions without the interaction terms, and because the model portrays some valuable information about the nuances of the relationship between income and rent payments. 
